@@ -9,35 +9,39 @@ var height = window.innerHeight;
 
 var svg = d3.select("body").append("svg")
 			.attr("height", height)
-			.attr("width", width);
-
+			.attr("width", width)
 
 var generateData = function(){
   
 	for(var i = 0; i < 100; i++)
 	{
-		var imageUrl = "http://www.e-pint.com/epint.jpg"
-	   var x = Math.floor((Math.random() * width) + 1);
-	   var y = Math.floor((Math.random() * height) + 1);	   
+	   data.push(generateCircle(null,null));
+	}
+
+}
+
+var generateCircle = function(x,y){
+
+	  if(x === null || y === null){
+	   	var x = Math.floor((Math.random() * width) + 1);
+	   	var y = Math.floor((Math.random() * height) + 1);
+	  }
+	   
 	   var size = Math.floor((Math.random() * 50) + 1);
 	   var red = Math.floor(Math.random() * 256);
 	   var green = Math.floor(Math.random() * 256);
 	   var blue = Math.floor(Math.random() * 256);
 	
 	   var color = 'rgb(' + red + ',' + green + ',' + blue + ')';   
-	   var c = { 
+	   return { 
 			r: size, 
 			cx: x, 
 			cy: y, 
 			red: red, 
 			green: green, 
 			blue: blue, 
-			color: color, 
-			img:imageUrl
+			color: color
 		};
-
-	   data.push(c);
-	}
 
 }
 
@@ -45,6 +49,22 @@ var cats = {};
 var circles = {};
 
 var backgroundTables = {};
+
+var addCircle = function(d,i){
+    console.log(d3.mouse(this));
+
+    data.splice(0,1);
+
+    var circle = generateCircle(d3.mouse(this)[0],d3.mouse(this)[1]);
+    console.log(circle);
+    data.push(circle);
+
+	svg.selectAll("circle").data(data)
+		.exit()
+		.remove();
+
+	draw();   
+}
 
 var draw = function(){
 	
@@ -57,7 +77,8 @@ var draw = function(){
 		   y: function(d,i){ return height - d.cy;},
 		   width: function(d,i) { return i * d.r},
 		   height: function(d,i) { return d.cy; },
-		   fill: function(d){ return d.color;}
+		   fill: function(d){ return d.color;},
+	           "fill-opacity": 0.8
 		});
 
 
@@ -82,15 +103,8 @@ var draw = function(){
 			   fill: function(d) { return d.color;},
 			   "fill-opacity": 0.8
 		     })
-    		    
-
-	/*cats.append("image").attr("xlink:href", "https://github.com/favicon.ico")
-		    .attr("x", function(d){ return d.cx - d.r;} )
-		    .attr("y", function(d){ return d.cy - d.r;})
-		    .attr("width", function(d) { return d.r * 2})
-		    .attr("height", function(d) { return d.r * 2})
-		    .attr("fill", function(d) { return d.color;})*/
-		
+		     
+      
 
 }
 
@@ -101,12 +115,16 @@ var reset = function(){
 	svg.selectAll("circle").data(data)
 		.exit()
 		.remove();
+
+	svg.selectAll("g").data(data)
+		.exit()
+		.remove();
 	
-	console.log("drawing");
 	generateData();
 
 	draw();
-	
+
+ 	svg.on("click", addCircle);
 }
 
 reset();
@@ -172,6 +190,34 @@ var startAnimation = function(){
 				}
 		
 				return d.cx;
+
+			},
+			height: function(d){
+				var num = Math.floor((Math.random() * (d.r + 10)) + 1);
+				num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+
+				d.cy = d.cy + num;
+
+				if(d.cy < 0)
+				{
+				  d.cy *= -1;
+				}
+		
+				return d.cy;
+
+			},
+			y: function(d){
+				var num = Math.floor((Math.random() * (d.r + 10)) + 1);
+				num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+
+				d.cy = d.cy + num;
+
+				if(d.cy < 0)
+				{
+				  d.cy *= -1;
+				}
+		
+				return d.cy;
 
 			},
 			fill: function(d){
