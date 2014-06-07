@@ -1,12 +1,6 @@
 
 
 
-var hello = (function(){
-	document.write('<h1>Hello World</h1>');
-})();
-
-
-
 var data = [
 ];
 
@@ -33,17 +27,20 @@ var generateData = function(){
 
 }
 
+var circles = {};
 
 var draw = function(){
-	svg.selectAll("circle").data(data)
-		.enter()
-		.append("circle")
-		.attr({
+	circles = svg.selectAll("circle").data(data)
+			.enter()
+			.append("circle")
+
+	circles.attr({
 		   r: function(d){ return d.r;},
 		   cx: function(d){ return d.cx;},
 		   cy: function(d){ return d.cy;},
 		   fill: function(d) { return d.color;}
-		});
+		})
+
 }
 
 var reset = function(){
@@ -59,10 +56,38 @@ var reset = function(){
 
 	draw();
 	
-	setTimeout(reset, 1000);
 }
 
 reset();
+
+var startAnimation = function(){
+
+	
+	console.log("moving");
+        circles
+		.transition()
+		.duration(2000)
+		.attr({
+		   r: function(d){
+			var num = Math.floor((Math.random() * (d.r + 10)) + 1);
+			num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+
+			d.r = d.r + num;
+
+			if(d.r < 0)
+			{
+			  d.r *= -1;
+			}
+		
+			return d.r;
+		   }
+		});
+
+	setTimeout(startAnimation, 1000);
+}
+
+startAnimation();
+
 
 
 
