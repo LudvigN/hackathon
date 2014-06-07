@@ -19,7 +19,7 @@ var generateData = function(){
 		var imageUrl = "http://www.e-pint.com/epint.jpg"
 	   var x = Math.floor((Math.random() * width) + 1);
 	   var y = Math.floor((Math.random() * height) + 1);	   
-	   var size = Math.floor((Math.random() * 20) + 1);	
+	   var size = Math.floor((Math.random() * 50) + 1);	
 	   var color = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';   
 	   var c = { r: size, cx: x, cy: y, color: color, img:imageUrl};
 
@@ -35,13 +35,15 @@ var draw = function(){
 
 	cats = svg.selectAll("circle").data(data)
 		.enter()
-		.append("image")
+		.append("g")
+		.attr({
+		    "x": function(d){ return d.cx;},
+		    "y": function(d){ return d.cy;},
+		    "width": function(d) { return d.r * 2},
+		    "height": function(d) { return d.r * 2}
+		});
 	
-	cats.attr("xlink:href", "https://github.com/favicon.ico")
-		    .attr("x", function(d){ return d.cx;} )
-		    .attr("y", function(d){ return d.cy;})
-		    .attr("width", 30)
-		    .attr("height", 30);
+
 
 	circles = cats.append("circle")
 		    .attr({
@@ -50,6 +52,13 @@ var draw = function(){
 			   cy: function(d){ return d.cy;},
 			   fill: function(d) { return d.color;}
 		 })
+
+	cats.append("image").attr("xlink:href", "https://github.com/favicon.ico")
+		    .attr("x", function(d){ return d.cx - d.r;} )
+		    .attr("y", function(d){ return d.cy - d.r;})
+		    .attr("width", function(d) { return d.r * 2})
+		    .attr("height", function(d) { return d.r * 2})
+		    .attr("fill", function(d) { return d.color;})
 		
 
 }
@@ -91,7 +100,7 @@ var startAnimation = function(){
 		
 			return d.r;
 		   },
-height: function(d){
+		height: function(d){
 			var num = Math.floor((Math.random() * (d.r + 10)) + 1);
 			num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
 
@@ -109,7 +118,7 @@ height: function(d){
 	setTimeout(startAnimation, 1000);
 }
 
-//startAnimation();
+startAnimation();
 
 
 
