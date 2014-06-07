@@ -19,9 +19,22 @@ var generateData = function(){
 		var imageUrl = "http://www.e-pint.com/epint.jpg"
 	   var x = Math.floor((Math.random() * width) + 1);
 	   var y = Math.floor((Math.random() * height) + 1);	   
-	   var size = Math.floor((Math.random() * 50) + 1);	
-	   var color = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';   
-	   var c = { r: size, cx: x, cy: y, color: color, img:imageUrl};
+	   var size = Math.floor((Math.random() * 50) + 1);
+	   var red = Math.floor(Math.random() * 256);
+	   var green = Math.floor(Math.random() * 256);
+	   var blue = Math.floor(Math.random() * 256);
+	
+	   var color = 'rgb(' + red + ',' + green + ',' + blue + ')';   
+	   var c = { 
+			r: size, 
+			cx: x, 
+			cy: y, 
+			red: red, 
+			green: green, 
+			blue: blue, 
+			color: color, 
+			img:imageUrl
+		};
 
 	   data.push(c);
 	}
@@ -31,10 +44,12 @@ var generateData = function(){
 var cats = {};
 var circles = {};
 
+var backgroundTables = {};
+
 var draw = function(){
 	
 
-	svg.append("g").selectAll("rect").data(data)
+	backgroundTables = svg.append("g").selectAll("rect").data(data)
 		.enter()
 		.append("rect")
 		.attr({
@@ -64,8 +79,10 @@ var draw = function(){
 	                   r: function(d){ return d.r; },
 			   cx: function(d){ return d.cx;},
 			   cy: function(d){ return d.cy;},
-			   fill: function(d) { return d.color;}
-		 })
+			   fill: function(d) { return d.color;},
+			   "fill-opacity": 0.8
+		     })
+    		    
 
 	/*cats.append("image").attr("xlink:href", "https://github.com/favicon.ico")
 		    .attr("x", function(d){ return d.cx - d.r;} )
@@ -114,19 +131,58 @@ var startAnimation = function(){
 		
 			return d.r;
 		   },
-		height: function(d){
-			var num = Math.floor((Math.random() * (d.r + 10)) + 1);
+		   fill: function(d){
+			var num = Math.floor((Math.random() * (d.r + 3)) + 1);
 			num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+			
+			d.red = d.red + num;
+			d.blue = d.blue + num;
+			d.green = d.green + num;
 
-			d.r = d.r + num;
-
-			if(d.r < 0)
-			{
-			  d.r *= -1;
-			}
-		
-			return d.r;
+			d.color = 'rgb(' + d.red + ',' + d.green + ',' + d.blue + ')';
+			
+			return d.color;
 		   }
+		});
+
+	backgroundTables.transition()
+		.duration(2000)
+		.attr({
+			width: function(d){
+				var num = Math.floor((Math.random() * (d.r + 10)) + 1);
+				num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+
+				d.cx = d.cx + num;
+
+				if(d.cx < 0)
+				{
+				  d.cx *= -1;
+				}
+		
+				return d.cx;
+
+			},
+			fill: function(d){
+				var num = Math.floor((Math.random() * (d.r + 3)) + 1);
+				num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+			
+				d.red = d.red + num;
+				d.blue = d.blue + num;
+				d.green = d.green + num;
+                                
+                                if(d.red > 255){ d.red = 125; }
+                                if(d.blue > 255){ d.blue = 125; }
+                                if(d.green > 255){ d.green = 125; }
+
+                               if(d.red < 0){ d.red = 125; }
+                                if(d.blue < 0){ d.blue = 125; }
+                                if(d.green < 0){ d.green = 125; }
+
+				d.color = 'rgb(' + d.red + ',' + d.green + ',' + d.blue + ')';
+			
+				return d.color;
+			}
+
 		});
 
 	setTimeout(startAnimation, 1000);
