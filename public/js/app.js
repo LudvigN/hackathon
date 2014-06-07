@@ -32,8 +32,22 @@ var cats = {};
 var circles = {};
 
 var draw = function(){
+	
 
-	cats = svg.selectAll("circle").data(data)
+	svg.append("g").selectAll("rect").data(data)
+		.enter()
+		.append("rect")
+		.attr({
+		   x: function(d,i){ return i * d.r; },
+		   y: function(d,i){ return height - d.cy;},
+		   width: function(d,i) { return i * d.r},
+		   height: function(d,i) { return d.cy; },
+		   fill: function(d){ return d.color;}
+		});
+
+
+
+	cats = svg.selectAll("g").data(data)
 		.enter()
 		.append("g")
 		.attr({
@@ -53,12 +67,12 @@ var draw = function(){
 			   fill: function(d) { return d.color;}
 		 })
 
-	cats.append("image").attr("xlink:href", "https://github.com/favicon.ico")
+	/*cats.append("image").attr("xlink:href", "https://github.com/favicon.ico")
 		    .attr("x", function(d){ return d.cx - d.r;} )
 		    .attr("y", function(d){ return d.cy - d.r;})
 		    .attr("width", function(d) { return d.r * 2})
 		    .attr("height", function(d) { return d.r * 2})
-		    .attr("fill", function(d) { return d.color;})
+		    .attr("fill", function(d) { return d.color;})*/
 		
 
 }
@@ -84,10 +98,10 @@ var startAnimation = function(){
 
 	
 	console.log("moving");
-        cats.transition()
+        circles.transition()
 		.duration(2000)
 		.attr({
-		   width: function(d){
+		   r: function(d){
 			var num = Math.floor((Math.random() * (d.r + 10)) + 1);
 			num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
 
