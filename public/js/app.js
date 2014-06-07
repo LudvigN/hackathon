@@ -139,6 +139,18 @@ var startAnimation = function(){
 			d.blue = d.blue + num;
 			d.green = d.green + num;
 
+                        if(d.red > 255 || d.blue > 255 || d.green > 255){ 
+				d.red = Math.floor(Math.random() * 256);
+				d.blue = Math.floor(Math.random() * 256);
+				d.green = Math.floor(Math.random() * 256);
+			}
+
+                        if(d.red < 0 || d.blue < 0 || d.green < 0){ 
+				d.red = Math.floor(Math.random() * 256);
+				d.blue = Math.floor(Math.random() * 256);
+				d.green = Math.floor(Math.random() * 256);
+			}
+
 			d.color = 'rgb(' + d.red + ',' + d.green + ',' + d.blue + ')';
 			
 			return d.color;
@@ -170,13 +182,18 @@ var startAnimation = function(){
 				d.blue = d.blue + num;
 				d.green = d.green + num;
                                 
-                                if(d.red > 255){ d.red = 125; }
-                                if(d.blue > 255){ d.blue = 125; }
-                                if(d.green > 255){ d.green = 125; }
+                                if(d.red > 255 || d.blue > 255 || d.green > 255){ 
+					d.red = Math.floor(Math.random() * 256);
+					d.blue = Math.floor(Math.random() * 256);
+					d.green = Math.floor(Math.random() * 256);
+				}
 
-                               if(d.red < 0){ d.red = 125; }
-                                if(d.blue < 0){ d.blue = 125; }
-                                if(d.green < 0){ d.green = 125; }
+                                if(d.red < 0 || d.blue < 0 || d.green < 0){ 
+					d.red = Math.floor(Math.random() * 256);
+					d.blue = Math.floor(Math.random() * 256);
+					d.green = Math.floor(Math.random() * 256);
+				}
+
 
 				d.color = 'rgb(' + d.red + ',' + d.green + ',' + d.blue + ')';
 			
